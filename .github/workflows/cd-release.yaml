@@ -1,0 +1,38 @@
+name: wf-cd-release
+on:
+  push:
+    branches:
+      - release/**
+jobs:
+  cd-release-build-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          ref: "${{github.ref}}"
+      - name: Build Artifact
+        run: npx parcel build "./src/index.html" --dist-dir "./dist" --public-url "./"
+      - name: Upload Build Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./dist"
+          name: "build-artifact-release"
+  cd-release-deploy-job:
+    needs: "cd-release-build-job"
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: env-staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Release Build Artifact in Staging Env
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: "build-artifact-release"
+          token: "${{github.token}}"
+
+
+
+          
