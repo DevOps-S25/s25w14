@@ -8,7 +8,7 @@ on:
       - synchronize
 jobs:
   ci-release-job:
-    runs-on: ubunutu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
